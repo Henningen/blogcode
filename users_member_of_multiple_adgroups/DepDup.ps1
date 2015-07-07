@@ -19,19 +19,20 @@ $groupHTs=@()
 $duplicateusers=@()
 
 #Populate group hashtables with members recursivly
-foreach ($group in $groups){
-	$members = get-adgroupmember $group -Recursive
+ForEach-Object ($group in $groups){
+	$members = get-ADGroupMember $group -Recursive
 	$groupht = @{}
-	foreach ($member in $members){
+	ForEach-Object ($member in $members){
 		$groupht.add($member.samaccountname, $group)
 	}
 	$groupHTs += $groupht
 }
 #Get all relevant enabled users from AD and use hashtables to count number of groups they are member of.
-$users = (get-aduser -filter * -searchbase $userou | where-object { $_.enabled -eq $true })
-foreach ($user in $users){
+$users = (Get-ADUser -filter * -searchbase $userou |
+Where-Object { $_.enabled -eq $true })
+ForEach-Object ($user in $users){
 	$groupmemberships=@()
-	foreach ($groupht in $groupHTs){
+	ForEach-Object ($groupht in $groupHTs){
 		if ($groupht.Containskey($user.samaccountname)) {
 			$groupmemberships += $groupht.Get_Item($user.samaccountname)
 		}
@@ -46,4 +47,6 @@ foreach ($user in $users){
 		$duplicateusers += $reportobject
 	}	
 }
-$duplicateusers | sort-object -property @{Expression="count";Descending=$true},@{Expression="samaccountname";Descending=$false}  | export-csv -Encoding UTF8 -NoTypeInformation -Delimiter ";" -Path "DepDup.csv"
+$duplicateusers | 
+Sort-Object -property @{Expression="count";Descending=$true},@{Expression="samaccountname";Descending=$false}  |
+Export-Csv -Encoding UTF8 -NoTypeInformation -Delimiter ";" -Path "DepDup.csv"
