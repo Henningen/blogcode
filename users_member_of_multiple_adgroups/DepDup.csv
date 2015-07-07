@@ -1,0 +1,7 @@
+count;samaccountname;groupmemberships
+3;user1;Department1,Department2,Department3
+2;user2;Department1,Department2
+2;user3;Department2,Department3
+2;user4;Department4,Department5
+0;user5;
+0;user6;
