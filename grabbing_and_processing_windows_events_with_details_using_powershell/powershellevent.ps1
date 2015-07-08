@@ -1,6 +1,6 @@
 param($EventRecordID, $eventsource, $eventid, $EventData, $EventChannel)
 $event = get-winevent -LogName $eventChannel -FilterXPath "<QueryList><Query Id='0' Path='$eventChannel'><Select Path='$eventChannel'>*[System[(EventRecordID=$eventRecordID)]]</Select></Query></QueryList>"
-@Mail{
+$Mail=@{
 	From = 'backupreports@int.company.com'
 	To = 'itsupport@int.company.com'
 	SMTPServer = 'smtp.int.company.com'
